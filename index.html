@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Keii Graphics</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #121214;
+            color: #e1e1e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .box {
+            background-color: #202024;
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 550px;
+            border: 1px solid #29292e;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            color: #00adb5;
+            text-align: center;
+            font-size: 1.6rem;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #a8a8b3;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #121214;
+            border: 2px solid #29292e;
+            color: #fff;
+            border-radius: 4px;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #00adb5;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #00adb5;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #008c95;
+        }
+        
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #toggle-text {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #a8a8b3;
+        }
+
+        #toggle-text a {
+            color: #00adb5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Clases del Dashboard */
+        .hidden { display: none !important; }
+
+        .badge {
+            background: #29292e;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #29292e;
+            margin: 1.5rem 0;
+        }
+
+        .panel-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .card {
+            background: #29292e;
+            padding: 1.2rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+            border-left: 4px solid #00adb5;
+        }
+
+        .card h4 {
+            margin-bottom: 0.4rem;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .card p {
+            font-size: 0.85rem;
+            color: #a8a8b3;
+            line-height: 1.4;
+            margin-bottom: 0.8rem;
+        }
+
+        /* Listas de juegos */
+        .game-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #121214;
+            padding: 0.6rem 0.8rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+
+        .game-name { font-size: 0.9rem; font-weight: 500; }
+
+        .btn-download {
+            background-color: #0056b3;
+            color: #fff;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Estilos de Rangos Visuales */
+        .role-standard { color: #a8a8b3; }
+        .role-media { color: #ffaa00; font-weight: bold; }
+        .role-premium { color: #00adb5; font-weight: bold; }
+
+        /* Estilos del Administrador y Tabla */
+        .admin-feature { border-left-color: #2ed573; }
+        
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 1rem;
+            background: #121214;
+            border-radius: 4px;
+            padding: 0.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 0.6rem;
+            border-bottom: 1px solid #29292e;
+        }
+
+        th { color: #00adb5; }
+
+        .select-role {
+            background: #202024;
+            color: #fff;
+            border: 1px solid #29292e;
+            padding: 0.2rem;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-delete {
+            background: #ff4757;
+            border: none;
+            color: #fff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .btn-delete:hover { background: #ff2e44; }
+
+        #btn-logout { background-color: #ff4757; margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+
+    <div id="auth-container" class="box">
+        <h2 id="auth-title">Iniciar Sesión</h2>
+        <form id="auth-form">
+            <div class="input-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" required placeholder="Ingresa tu usuario">
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" required placeholder="******">
+            </div>
+            <button type="submit" id="btn-primary">Entrar</button>
+        </form>
+        <p id="toggle-text">¿No tienes cuenta? <a href="#" id="auth-toggle">Regístrate aquí</a></p>
+    </div>
+
+    <div id="dashboard-container" class="box hidden">
+        <h2>👋 ¡Bienvenido, <span id="user-display"></span>!</h2>
+        <div style="text-align: center;">
+            <p class="badge">Rango Actual: <strong id="user-role">Limitado</strong></p>
+        </div>
+        
+        <hr>
+
+        <div class="panel-content">
+            
+            <div id="games-card" class="card">
+                <h3>🎮 Tus Descargas Disponibles</h3>
+                <p>Abajo verás los servidores a los que tu rango te permite acceder:</p>
+                
+                <div class="game-list">
+                    <div class="game-item">
+                        <span class="game-name">🌐 [Gratis] GTA San Andreas Lite</span>
+                        <a href="https://www.mediafire.com" target="_blank" class="btn-download">MediaFire</a>
+                    </div>
+
+                    <div class="game-item rank-restricted" data-min-role="Media">
+                        <span class="game-name">⭐ [Media] Minecraft PE Premium Keys</span>
+                        <a href="https://www.mediafire.com" target="_blank" class="btn-download" style="background-color: #ffaa00;">MediaFire</a>
+                    </div>
+
+                    <div class="game-item rank-restricted" data-min-role="Premium">
+                        <span class="game-name">🔥 [VIP Premium] Need For Speed Unlocked</span>
+                        <a href="https://www.mediafire.com" target="_blank" class="btn-download" style="background-color: #00adb5;">MediaFire</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="admin-card" class="card admin-feature hidden">
+                <h3>👥 Gestión del Servidor y Usuarios</h3>
+                <p>Aquí puedes auditar las cuentas registradas y asignarles rangos (Media, Premium, Limitado):</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Rango</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <button id="btn-logout">Cerrar Sesión</button>
+    </div>
+
+    <script>
+        const authContainer = document.getElementById('auth-container');
+        const dashboardContainer = document.getElementById('dashboard-container');
+        const authTitle = document.getElementById('auth-title');
+        const authForm = document.getElementById('auth-form');
+        const btnPrimary = document.getElementById('btn-primary');
+        const authToggle = document.getElementById('auth-toggle');
+        const toggleText = document.getElementById('toggle-text');
+        const userDisplay = document.getElementById('user-display');
+        const btnLogout = document.getElementById('btn-logout');
+
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        let isLoginMode = true;
+
+        // Credenciales Maestras de Admin
+        const ADMIN_USER = "Admin";
+        const ADMIN_PASS = "Keii";
+
+        // Alternar Login/Registro
+        authToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+            if (!isLoginMode) {
+                authTitle.innerText = "Crear Cuenta";
+                btnPrimary.innerText = "Registrarse";
+                toggleText.innerHTML = '¿Ya tienes cuenta? <a href="#" id="auth-toggle">Inicia sesión</a>';
+            } else {
+                authTitle.innerText = "Iniciar Sesión";
+                btnPrimary.innerText = "Entrar";
+                toggleText.innerHTML = '¿No tienes cuenta? <a href="#" id="auth-toggle">Regístrate aquí</a>';
+            }
+            document.getElementById('auth-toggle').addEventListener('click', (ev) => { e.preventDefault(); authToggle.click(); });
+        });
+
+        // Formulario de envío
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!isLoginMode) {
+                // --- REGISTRO ---
+                if (username.toLowerCase() === ADMIN_USER.toLowerCase() || localStorage.getItem(username)) {
+                    alert("❌ Nombre de usuario no disponible.");
+                    return;
+                }
+                const userData = { password: password, role: "Limitado" };
+                localStorage.setItem(username, JSON.stringify(userData));
+                alert("✅ Registrado con éxito. ¡Inicia sesión!");
+                authToggle.click();
+            } else {
+                // --- INICIO DE SESIÓN ---
+                if (username === ADMIN_USER && password === ADMIN_PASS) {
+                    entrarAlPanel(username, "Admin");
+                    return;
+                }
+
+                const savedUser = localStorage.getItem(username);
+                if (savedUser) {
+                    const parsedData = JSON.parse(savedUser);
+                    if (parsedData.password === password) {
+                        entrarAlPanel(username, parsedData.role);
+                    } else {
+                        alert("❌ Contraseña incorrecta.");
+                    }
+                } else {
+                    alert("❌ El usuario no existe.");
+                }
+            }
+        });
+
+        // Al entrar al panel principal
+        function entrarAlPanel(username, role) {
+            authContainer.classList.add('hidden');
+            dashboardContainer.classList.remove('hidden');
+            userDisplay.innerText = username;
+            
+            const roleBadge = document.getElementById('user-role');
+            roleBadge.innerText = role;
+
+            const gamesCard = document.getElementById('games-card');
+            const adminCard = document.getElementById('admin-card');
+
+            if (role === "Admin") {
+                roleBadge.style.background = "#2ed573";
+                roleBadge.style.color = "#fff";
+                
+                adminCard.classList.remove('hidden'); // Muestra la tabla de control
+                gamesCard.classList.add('hidden');    // Oculta los links de descarga al Admin
+                cargarTablaUsuarios();                 // Genera la lista de usuarios guardados
+            } else {
+                // Configurar badges de color según rango asignado
+                if (role === "Premium") { roleBadge.style.background = "#00adb5"; roleBadge.style.color = "#fff"; }
+                else if (role === "Media") { roleBadge.style.background = "#ffaa00"; roleBadge.style.color = "#000"; }
+                else { roleBadge.style.background = "#29292e"; roleBadge.style.color = "#e1e1e6"; }
+
+                adminCard.classList.add('hidden');
+                gamesCard.classList.remove('hidden');
+                filtrarContenidoPorRango(role); // Oculta o muestra links según el rango del usuario
+            }
+        }
+
+        // LÓGICA DEL ADMIN: Leer localStorage y renderizar la tabla
+        function cargarTablaUsuarios() {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = ""; // Limpiar tabla anterior
+
+            let usuariosEncontrados = false;
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                
+                // Intentar leer el contenido para asegurar que es un objeto de usuario válido
+                try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    if (data && data.role) {
+                        usuariosEncontrados = true;
+                        
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><strong>${key}</strong></td>
+                            <td>
+                                <select class="select-role" data-user="${key}">
+                                    <option value="Limitado" ${data.role === 'Limitado' ? 'selected' : ''}>Limitado</option>
+                                    <option value="Media" ${data.role === 'Media' ? 'selected' : ''}>Media</option>
+                                    <option value="Premium" ${data.role === 'Premium' ? 'selected' : ''}>Premium</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn-delete" data-user="${key}">Eliminar</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    }
+                } catch(e) {
+                    // Ignora llaves del sistema que no correspondan a nuestra estructura de usuarios
+                }
+            }
+
+            if (!usuariosEncontrados) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#555;">No hay usuarios registrados aún.</td></tr>`;
+            }
+
+            // Añadir eventos a los Selects para cambiar de rango en vivo
+            document.querySelectorAll('.select-role').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const targetUser = e.target.getAttribute('data-user');
+                    const newRole = e.target.value;
+                    
+                    const userData = JSON.parse(localStorage.getItem(targetUser));
+                    userData.role = newRole; // Cambiamos el rol interno
+                    
+                    localStorage.setItem(targetUser, JSON.stringify(userData)); // Guardamos en memoria
+                    alert(`Rango de ${targetUser} modificado a: ${newRole}`);
+                });
+            });
+
+            // Añadir eventos para eliminar cuentas
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const targetUser = e.target.getAttribute('data-user');
+                    if (confirm(`¿Estás seguro de que deseas eliminar la cuenta de ${targetUser}?`)) {
+                        localStorage.removeItem(targetUser);
+                        cargarTablaUsuarios(); // Refrescar tabla automáticamente
+                    }
+                });
+            });
+        }
+
+        // LÓGICA DE USUARIOS: Bloquear/Mostrar links de MediaFire según permisos
+        function filtrarContenidoPorRango(userRole) {
+            const items = document.querySelectorAll('.rank-restricted');
+            
+            items.forEach(item => {
+                const minRoleRequired = item.getAttribute('data-min-role');
+                
+                if (userRole === "Premium") {
+                    // El Premium ve absolutamente todo
+                    item.classList.remove('hidden');
+                } else if (userRole === "Media") {
+                    // El Media ve cosas "Media" pero no las "Premium"
+                    if (minRoleRequired === "Premium") item.classList.add('hidden');
+                    else item.classList.remove('hidden');
+                } else {
+                    // El Limitado solo ve las cosas públicas (las que no tienen restricción)
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        // Desconexión
+        btnLogout.addEventListener('click', () => {
+            dashboardContainer.classList.add('hidden');
+            authContainer.classList.remove('hidden');
+            authForm.reset();
+        });
+    </script>
+</body>
+</html>
